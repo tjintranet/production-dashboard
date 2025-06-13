@@ -3,946 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Security: Prevent search engine indexing and crawling -->
-    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, notranslate, noimageindex">
-    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
-    <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
-    <meta name="slurp" content="noindex, nofollow, noarchive, nosnippet">
-    <meta name="duckduckbot" content="noindex, nofollow">
-    
-    <!-- Prevent caching of sensitive data -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <!-- Additional privacy headers -->
-    <meta name="referrer" content="no-referrer">
+    <title>Prepress Tools Hub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     
-    <title>TJ Clays Production Dashboard</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #718096 0%, #4A5568 100%);
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background: linear-gradient(180deg, #000000 0%, #121212 100%);
+            color: #f8f9fa;
             min-height: 100vh;
-            padding: 15px;
-            margin: 0;
-            overflow-x: hidden;
         }
-
-        .dashboard {
-            max-width: 100vw;
-            width: 100%;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            min-height: calc(100vh - 30px);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+        .tool-card {
+            transition: transform 0.2s;
+            background-color: #ffffff;
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #e1e5e9;
+        .dark-mode .tool-card {
+            background-color: #333333;
+            color: #ffffff;
+            border-color: #404040;
         }
-
-        .company-name {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 10px;
+        .tool-card:hover {
+            transform: translateY(-3px);
         }
-
-        .report-title {
-            font-size: 1.8rem;
-            color: #7f8c8d;
-            margin: 0;
+        .card-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #0d6efd;
         }
-
-        .date-info {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            font-size: 1.2rem;
-            color: #34495e;
-            margin-top: 15px;
+        .dark-mode .card-icon {
+            color: #3d8bfd;
         }
-
-        .report-date-container {
-            display: flex;
-            align-items: center;
-            gap: 25px;
+        .tools-container {
+            max-width: 1600px;
         }
-
-        .date-badge {
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 1.1rem;
+        .card-body {
+            padding: 1rem;
         }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.2rem;
-            color: #7f8c8d;
+        .card-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
         }
-
-        .error {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.2rem;
-            color: #e74c3c;
-            background: #fdf2f2;
-            border-radius: 10px;
-            margin: 20px 0;
+        .card-text {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
         }
-
-        .last-updated {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-top: 20px;
-            font-style: italic;
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
         }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
+        .bg-primary {
+            background: linear-gradient(180deg, #0a58ca 0%, #0d6efd 100%) !important;
         }
-
-        .metric-card {
-            background: white;
-            border-radius: 15px;
-            padding: 18px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            height: auto;
+        .bi-wrench {
+            transform: scaleX(-1);
         }
-
-        .metric-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-        }
-
-        .metric-card.conventional { border-left-color: #e74c3c; }
-        .metric-card.pod { border-left-color: #f39c12; }
-        .metric-card.personalized { border-left-color: #9b59b6; }
-        .metric-card.trade { border-left-color: #1abc9c; }
-
-        .metric-header {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            line-height: 1.2;
-        }
-
-        .metric-icon {
-            width: 28px;
-            height: 28px;
-            margin-right: 8px;
+        .theme-toggle {
+            cursor: pointer;
+            padding: 5px;
             border-radius: 50%;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: white;
-            font-size: 0.75rem;
-            flex-shrink: 0;
+            background: rgba(255,255,255,0.2);
+            aspect-ratio: 1;
+        }
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Badge style */
+        .dev-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
         }
 
-        .conventional .metric-icon { background: #e74c3c; }
-        .pod .metric-icon { background: #f39c12; }
-        .personalized .metric-icon { background: #9b59b6; }
-        .trade .metric-icon { background: #1abc9c; }
-
-        .comparison-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-        .comparison-section {
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .value-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            font-size: 0.8rem;
-            line-height: 1.1;
-            margin-top: 6px;
-        }
-
-        .value-label {
-            color: #7f8c8d;
-            font-weight: 500;
-        }
-
-        .value-number {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .value-number.positive { color: #27ae60; }
-        .value-number.negative { color: #e74c3c; }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #ecf0f1;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3498db, #2980b9);
-            border-radius: 4px;
-            transition: width 0.8s ease;
-        }
-
-        .kpi-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .kpi-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .kpi-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .kpi-item {
-            text-align: center;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .kpi-metric {
-            font-size: 0.75rem;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-            line-height: 1.2;
-        }
-
-        .kpi-value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2c3e50;
-            line-height: 1.1;
-        }
-
-        .percentage {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-top: 8px;
-            line-height: 1.1;
-        }
-
-        .percentage.good { color: #27ae60; }
-        .percentage.warning { color: #f39c12; }
-        .percentage.poor { color: #e74c3c; }
-
-        .summary-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-box {
-            background: linear-gradient(135deg, #718096 0%, #4A5568 100%);
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        @media (max-width: 1200px) {
-            .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
-            
-            .kpi-section {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                padding: 15px;
-                border-radius: 0;
-                min-height: 100vh;
-            }
-            
-            .company-name {
-                font-size: 2.2rem;
-            }
-            
-            .report-title {
-                font-size: 1.4rem;
-            }
-            
-            .date-info {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .report-date-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .metrics-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .kpi-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .summary-stats {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-        }
-
-        /* TV Display Optimizations */
-        @media (min-width: 1920px) {
-            .dashboard {
-                padding: 25px;
-                max-width: none;
-            }
-            
-            .company-name {
-                font-size: 3.2rem;
-            }
-            
-            .report-title {
-                font-size: 2.2rem;
-            }
-            
-            .metric-header {
-                font-size: 1.3rem;
-            }
-            
-            .value-row {
-                font-size: 0.95rem;
-            }
-            
-            .section-title {
-                font-size: 0.9rem;
-            }
-            
-            .kpi-title {
-                font-size: 1.6rem;
-            }
-            
-            .kpi-metric {
-                font-size: 0.85rem;
-            }
-            
-            .stat-value {
-                font-size: 2.2rem;
-            }
-            
-            .percentage {
-                font-size: 1.5rem;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="header">
-            <h1 class="company-name">TJ Clays Limited</h1>
-            <div class="date-info">
-                <div class="report-date-container">
-                    <p class="report-title">Daily Production Report</p>
-                    <span class="date-badge" id="report-date">Loading...</span>
+    <div class="container-fluid py-3 bg-primary text-white">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="invisible" style="width: 200px">Spacer</div>
+            <h1 class="h3 mb-0 fw-bold text-center flex-grow-1">Prepress Tools Hub <i class="bi bi-wrench ms-2"></i></h1>
+            <div class="d-flex justify-content-end pe-4 align-items-center" style="width: 200px;">
+                <div class="theme-toggle me-3" onclick="toggleTheme()">
+                    <i class="bi bi-sun-fill text-white"></i>
                 </div>
+                <a href="http://192.168.10.233:51089/#/app/submitpoints" class="btn btn-light me-2 px-3 d-flex align-items-center" target="_blank">Switch<i class="bi bi-caret-right-square ms-2"></i></a>
+                <a href="http://192.168.10.251/epace/login.html" class="btn btn-warning px-3 d-flex align-items-center" target="_blank">PACE<i class="bi bi-caret-right-square ms-2"></i></a>
             </div>
         </div>
-
-        <div id="loading" class="loading">
-            Loading production data...
-        </div>
-
-        <div id="error" class="error" style="display: none;">
-            Unable to load production data. Please ensure the CSV file is available.
-        </div>
-
-        <div id="dashboard-content" style="display: none;">
-            <div class="metrics-grid" id="metrics-grid">
-                <!-- Metrics will be populated by JavaScript -->
-            </div>
-
-            <div class="kpi-section" id="kpi-section">
-                <!-- KPIs will be populated by JavaScript -->
-            </div>
-
-            <div class="summary-stats" id="summary-stats">
-                <!-- Summary stats will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <div class="last-updated" id="last-updated"></div>
     </div>
 
-    <script>
-        // Configuration
-        const CSV_FILE_URL = './dailyproduction.csv'; // CSV file in repo root (matches your uploaded filename)
-        
-        // Utility functions
-        function formatNumber(num) {
-            if (num === null || num === undefined || num === '') return '0';
-            return Number(num).toLocaleString();
-        }
-
-        function calculatePercentage(actual, target) {
-            if (!target || target === 0) return 0;
-            return Math.round((actual / target) * 100 * 10) / 10;
-        }
-
-        function getVarianceClass(variance) {
-            if (variance > 0) return 'positive';
-            if (variance < 0) return 'negative';
-            return '';
-        }
-
-        function getPercentageClass(percentage) {
-            if (percentage >= 95) return 'good';
-            if (percentage >= 85) return 'warning';
-            return 'poor';
-        }
-
-        function excelDateToJSDate(serial) {
-            // Excel's epoch starts from January 1, 1900
-            // But Excel incorrectly treats 1900 as a leap year, so we need to adjust
-            const excelEpoch = new Date(1899, 11, 30); // December 30, 1899
-            const msPerDay = 24 * 60 * 60 * 1000;
-            return new Date(excelEpoch.getTime() + (serial * msPerDay));
-        }
-
-        function getOrdinalSuffix(day) {
-            if (day > 3 && day < 21) return 'th';
-            switch (day % 10) {
-                case 1: return 'st';
-                case 2: return 'nd';
-                case 3: return 'rd';
-                default: return 'th';
-            }
-        }
-
-        function formatDate(jsDate) {
-            const weekday = jsDate.toLocaleDateString('en-GB', { weekday: 'long' });
-            const day = jsDate.getDate();
-            const month = jsDate.toLocaleDateString('en-GB', { month: 'long' });
-            const year = jsDate.getFullYear();
-            return `${weekday} ${day}${getOrdinalSuffix(day)} ${month} ${year}`;
-        }
-
-        // Data parsing function
-        function parseCSVData(csvText) {
-            const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
-            const data = {};
-
-            // Parse CSV structure based on your actual CSV format
-            // Line 4 contains: "45820,Thursday" - we need the first value (Excel date serial)
-            const dateLine = lines[3]; // Line 4 (0-indexed)
-            if (dateLine) {
-                const dateSerial = dateLine.split(',')[0];
-                if (dateSerial && !isNaN(dateSerial)) {
-                    const jsDate = excelDateToJSDate(parseInt(dateSerial));
-                    data.date = formatDate(jsDate);
-                } else {
-                    data.date = 'Thursday 12th June 2025';
-                }
-            }
-
-            // Parse production data from the CSV
-            // Line 11: Conventional books data
-            const conventionalLine = lines[10].split(',');
-            data.conventional = {
-                yesterday: { 
-                    actual: parseInt(conventionalLine[1]) || 1614, 
-                    target: parseInt(conventionalLine[2]) || 11000, 
-                    variance: parseInt(conventionalLine[3]) || -9386,
-                    heads: parseInt(conventionalLine[6]) || 11,
-                    hours: parseInt(conventionalLine[7]) || 132
-                },
-                mtd: { 
-                    actual: parseInt(conventionalLine[14]) || 11184, 
-                    target: parseInt(conventionalLine[15]) || 115500, 
-                    variance: parseInt(conventionalLine[16]) || -104316 
-                }
-            };
-
-            // Line 12: POD data
-            const podLine = lines[11].split(',');
-            data.pod = {
-                yesterday: { 
-                    actual: parseInt(podLine[1]) || 800, 
-                    target: parseInt(podLine[2]) || 1250, 
-                    variance: parseInt(podLine[3]) || -450,
-                    heads: parseInt(podLine[6]) || 2,
-                    hours: parseInt(podLine[7]) || 24
-                },
-                mtd: { 
-                    actual: parseInt(podLine[14]) || 7927, 
-                    target: parseInt(podLine[15]) || 11250, 
-                    variance: parseInt(podLine[16]) || -3323 
-                }
-            };
-
-            // Line 13: Personalised books data
-            const personalizedLine = lines[12].split(',');
-            data.personalized = {
-                yesterday: { 
-                    actual: parseInt(personalizedLine[1]) || 1774, 
-                    target: parseInt(personalizedLine[2]) || 3000, 
-                    variance: parseInt(personalizedLine[3]) || -1226,
-                    heads: parseInt(personalizedLine[6]) || 2,
-                    hours: parseInt(personalizedLine[7]) || 24
-                },
-                mtd: { 
-                    actual: parseInt(personalizedLine[14]) || 11756, 
-                    target: Math.round(parseFloat(personalizedLine[15])) || 26000, 
-                    variance: Math.round(parseFloat(personalizedLine[16])) || -14244 
-                }
-            };
-
-            // Line 14: Clays Trade data
-            const tradeLine = lines[13].split(',');
-            data.trade = {
-                yesterday: { 
-                    actual: parseInt(tradeLine[1]) || 269, 
-                    target: parseInt(tradeLine[2]) || 12500, 
-                    variance: parseInt(tradeLine[3]) || -12231,
-                    heads: parseInt(tradeLine[6]) || 10,
-                    hours: parseInt(tradeLine[7]) || 120
-                },
-                mtd: { 
-                    actual: parseInt(tradeLine[14]) || 8541, 
-                    target: parseInt(tradeLine[15]) || 131250, 
-                    variance: parseInt(tradeLine[16]) || -122709 
-                }
-            };
-
-            // Parse On Time Performance data
-            // Line 18: Conventional books & Clays Trade
-            const onTimeConvLine = lines[17].split(',');
-            data.onTime = {
-                conventional: {
-                    yesterday: parseFloat(onTimeConvLine[11]) * 100 || 87.0,
-                    mtd: parseFloat(onTimeConvLine[18]) * 100 || 96.9
-                },
-                pod: {
-                    yesterday: parseFloat(lines[18].split(',')[11]) * 100 || 100,
-                    mtd: parseFloat(lines[18].split(',')[18]) * 100 || 100
-                },
-                personalized: {
-                    yesterday: parseFloat(lines[19].split(',')[11]) * 100 || 71.9,
-                    mtd: parseFloat(lines[19].split(',')[18]) * 100 || 69.2
-                }
-            };
-
-            // Parse Rework data (Lines 30 and 32)
-            const reworkYesterdayLine = lines[29].split(','); // Line 30
-            const reworkMtdLine = lines[31].split(','); // Line 32
-            data.rework = {
-                yesterday: {
-                    jobs: parseInt(reworkYesterdayLine[1]) || 1,
-                    jobParts: parseInt(reworkYesterdayLine[2]) || 1,
-                    quantity: parseInt(reworkYesterdayLine[3]) || 750,
-                    value: parseFloat(reworkYesterdayLine[4]) || 354.25
-                },
-                mtd: {
-                    jobs: parseInt(reworkMtdLine[1]) || 8,
-                    jobParts: parseInt(reworkMtdLine[2]) || 10,
-                    quantity: parseInt(reworkMtdLine[3]) || 3483,
-                    value: parseFloat(reworkMtdLine[4]) || 3163.22
-                }
-            };
-
-            // Parse In Full Performance data (Lines 24-26)
-            const inFullConvLine = lines[23].split(','); // Line 24
-            const inFullPodLine = lines[24].split(',');  // Line 25
-            const inFullPersLine = lines[25].split(','); // Line 26
-            data.inFull = {
-                conventional: {
-                    yesterday: {
-                        jobsShort: parseInt(inFullConvLine[1]) || 1,
-                        quantityRequested: parseInt(inFullConvLine[2]) || 150,
-                        actualQuantity: parseInt(inFullConvLine[3]) || 144,
-                        short: parseInt(inFullConvLine[4]) || -6,
-                        percentageShort: parseFloat(inFullConvLine[11]) * 100 || -4.0
-                    },
-                    mtd: {
-                        jobsShort: parseInt(inFullConvLine[14]) || 17,
-                        quantityRequested: parseInt(inFullConvLine[15]) || 16725,
-                        actualQuantity: parseInt(inFullConvLine[16]) || 16505,
-                        short: parseInt(inFullConvLine[17]) || -220,
-                        percentageShort: parseFloat(inFullConvLine[18]) * 100 || -1.3
-                    }
-                },
-                pod: {
-                    yesterday: {
-                        short: parseInt(inFullPodLine[4]) || 0,
-                        percentageShort: parseFloat(inFullPodLine[11]) * 100 || 0
-                    },
-                    mtd: {
-                        short: parseInt(inFullPodLine[17]) || 0,
-                        percentageShort: parseFloat(inFullPodLine[18]) * 100 || 0
-                    }
-                },
-                personalized: {
-                    yesterday: {
-                        short: parseInt(inFullPersLine[4]) || 0,
-                        percentageShort: parseFloat(inFullPersLine[11]) * 100 || 0
-                    },
-                    mtd: {
-                        short: parseInt(inFullPersLine[17]) || 0,
-                        percentageShort: parseFloat(inFullPersLine[18]) * 100 || 0
-                    }
-                }
-            };
-
-            return data;
-        }
-
-        // Load and parse CSV data
-        async function loadData() {
-            try {
-                const response = await fetch(CSV_FILE_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+        <div class="container tools-container py-3">
+            <div class="row g-3">
                 
-                const csvText = await response.text();
-                const data = parseCSVData(csvText);
-                
-                renderDashboard(data);
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('dashboard-content').style.display = 'block';
-                document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
-                
-            } catch (error) {
-                console.error('Error loading data:', error);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('error').style.display = 'block';
-            }
-        }
-
-        // Render dashboard with data
-        function renderDashboard(data) {
-            // Update date
-            document.getElementById('report-date').textContent = data.date || 'Thursday 12th June 2024';
-
-            // Render metrics
-            const metricsGrid = document.getElementById('metrics-grid');
-            metricsGrid.innerHTML = `
-                ${createMetricCard('conventional', 'CB', 'Conventional Books', data.conventional)}
-                ${createMetricCard('pod', 'POD', 'Print on Demand', data.pod)}
-                ${createMetricCard('personalized', 'PB', 'Personalised Books', data.personalized)}
-                ${createMetricCard('trade', 'CT', 'Clays Trade', data.trade)}
-            `;
-
-            // Render KPIs with real data from CSV: On Time, In Full, and Rework
-            const kpiSection = document.getElementById('kpi-section');
-            kpiSection.innerHTML = `
-                <div class="kpi-card">
-                    <div class="kpi-title">On Time Performance</div>
-                    <div class="kpi-grid">
-                        <div class="comparison-section">
-                            <div class="section-title">Yesterday</div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Conventional & Trade</div>
-                                <div class="percentage ${getPercentageClass(data.onTime?.conventional?.yesterday || 87)}">${(data.onTime?.conventional?.yesterday || 87).toFixed(1)}%</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">POD</div>
-                                <div class="percentage ${getPercentageClass(data.onTime?.pod?.yesterday || 100)}">${(data.onTime?.pod?.yesterday || 100).toFixed(0)}%</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Personalised</div>
-                                <div class="percentage ${getPercentageClass(data.onTime?.personalized?.yesterday || 71.9)}">${(data.onTime?.personalized?.yesterday || 71.9).toFixed(1)}%</div>
-                            </div>
-                        </div>
-                        <div class="comparison-section">
-                            <div class="section-title">Month to Date</div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Conventional & Trade</div>
-                                <div class="percentage ${getPercentageClass(data.onTime?.conventional?.mtd || 96.9)}">${(data.onTime?.conventional?.mtd || 96.9).toFixed(1)}%</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">POD</div>
-                                <div class="percentage ${getPercentageClass(data.onTime?.pod?.mtd || 100)}">${(data.onTime?.pod?.mtd || 100).toFixed(0)}%</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Personalised</div>
-                                <div class="percentage ${getPercentageClass(data.onTime?.personalized?.mtd || 69.2)}">${(data.onTime?.personalized?.mtd || 69.2).toFixed(1)}%</div>
-                            </div>
+                <!-- Excel to XML for DBS -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="card tool-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-code-slash card-icon"></i>
+                            <h5 class="card-title">PACE Metadata to XML for DBS</h5>
+                            <p class="card-text">Upload PACE Metadata</p>
+                            <a href="https://tjintranet.github.io/Excel-to-XML-for-DBS/" class="btn btn-primary btn-sm">Open</a>
                         </div>
                     </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">In Full Performance</div>
-                    <div class="kpi-grid">
-                        <div class="comparison-section">
-                            <div class="section-title">Yesterday</div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Conventional & Trade</div>
-                                <div class="kpi-value">${(100 + (data.inFull?.conventional?.yesterday?.percentageShort || -4)).toFixed(1)}%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">${Math.abs(data.inFull?.conventional?.yesterday?.short || 6)} units</span>
-                                </div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">POD</div>
-                                <div class="kpi-value good">${(100 + (data.inFull?.pod?.yesterday?.percentageShort || 0)).toFixed(0)}%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">${Math.abs(data.inFull?.pod?.yesterday?.short || 0)} units</span>
-                                </div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Personalised</div>
-                                <div class="kpi-value good">${(100 + (data.inFull?.personalized?.yesterday?.percentageShort || 0)).toFixed(0)}%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">${Math.abs(data.inFull?.personalized?.yesterday?.short || 0)} units</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="comparison-section">
-                            <div class="section-title">Month to Date</div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Conventional & Trade</div>
-                                <div class="kpi-value">${(100 + (data.inFull?.conventional?.mtd?.percentageShort || -1.3)).toFixed(1)}%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">${Math.abs(data.inFull?.conventional?.mtd?.short || 220)} units</span>
-                                </div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">POD</div>
-                                <div class="kpi-value good">${(100 + (data.inFull?.pod?.mtd?.percentageShort || 0)).toFixed(0)}%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">${Math.abs(data.inFull?.pod?.mtd?.short || 0)} units</span>
-                                </div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Personalised</div>
-                                <div class="kpi-value good">${(100 + (data.inFull?.personalized?.mtd?.percentageShort || 0)).toFixed(0)}%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">${Math.abs(data.inFull?.personalized?.mtd?.short || 0)} units</span>
-                                </div>
-                            </div>
-                        </div>
+                
+            <!-- DBS Datamatrix Barcode Generator -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card tool-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-upc-scan card-icon"></i>
+                        <h5 class="card-title">DBS Datamatrix Barcodes</h5>
+                        <p class="card-text">Create DBD Datamatrix</p>
+                        <a href="https://tjintranet.github.io/DBS-Datamatrix-Generator/" class="btn btn-primary btn-sm">Open</a>
                     </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">Rework Analysis</div>
-                    <div class="kpi-grid">
-                        <div class="comparison-section">
-                            <div class="section-title">Yesterday</div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Jobs</div>
-                                <div class="kpi-value">${data.rework?.yesterday?.jobs || 1}</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Quantity</div>
-                                <div class="kpi-value">${formatNumber(data.rework?.yesterday?.quantity || 750)}</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Value</div>
-                                <div class="kpi-value">£${(data.rework?.yesterday?.value || 354.25).toFixed(2)}</div>
-                            </div>
-                        </div>
-                        <div class="comparison-section">
-                            <div class="section-title">Month to Date</div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Jobs</div>
-                                <div class="kpi-value">${data.rework?.mtd?.jobs || 8}</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Quantity</div>
-                                <div class="kpi-value">${formatNumber(data.rework?.mtd?.quantity || 3483)}</div>
-                            </div>
-                            <div class="kpi-item">
-                                <div class="kpi-metric">Value</div>
-                                <div class="kpi-value">£${(data.rework?.mtd?.value || 3163.22).toFixed(2)}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Render summary stats with calculated totals from CSV
-            const totalYesterday = data.conventional.yesterday.actual + data.pod.yesterday.actual + 
-                                  data.personalized.yesterday.actual + data.trade.yesterday.actual;
-            const totalMTD = data.conventional.mtd.actual + data.pod.mtd.actual + 
-                            data.personalized.mtd.actual + data.trade.mtd.actual;
+            </div>  
             
-            // Calculate total hours from individual product lines
-            const totalHours = (data.conventional.yesterday.hours || 0) + 
-                              (data.pod.yesterday.hours || 0) + 
-                              (data.personalized.yesterday.hours || 0) + 
-                              (data.trade.yesterday.hours || 0);
-
-            // Calculate total heads
-            const totalHeads = (data.conventional.yesterday.heads || 0) + 
-                              (data.pod.yesterday.heads || 0) + 
-                              (data.personalized.yesterday.heads || 0) + 
-                              (data.trade.yesterday.heads || 0);
-
-            const summaryStats = document.getElementById('summary-stats');
-            summaryStats.innerHTML = `
-                <div class="stat-box">
-                    <div class="stat-value">${formatNumber(totalYesterday)}</div>
-                    <div class="stat-label">Total Units Yesterday</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">${formatNumber(totalMTD)}</div>
-                    <div class="stat-label">Total Units MTD</div>
-                </div>
-            `;
-        }
-
-        function createMetricCard(type, icon, title, data) {
-            const yesterdayProgress = calculatePercentage(data.yesterday.actual, data.yesterday.target);
-            const mtdProgress = calculatePercentage(data.mtd.actual, data.mtd.target);
-
-            return `
-                <div class="metric-card ${type}">
-                    <div class="metric-header">
-                        <div class="metric-icon">${icon}</div>
-                        ${title}
-                    </div>
-                    <div class="comparison-row">
-                        <div class="comparison-section">
-                            <div class="section-title">Yesterday</div>
-                            <div class="value-row">
-                                <span class="value-label">Actual:</span>
-                                <span class="value-number">${formatNumber(data.yesterday.actual)}</span>
-                            </div>
-                            <div class="value-row">
-                                <span class="value-label">Target:</span>
-                                <span class="value-number">${formatNumber(data.yesterday.target)}</span>
-                            </div>
-                            <div class="value-row">
-                                <span class="value-label">Variance:</span>
-                                <span class="value-number ${getVarianceClass(data.yesterday.variance)}">${formatNumber(data.yesterday.variance)}</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${Math.min(100, yesterdayProgress)}%"></div>
-                            </div>
-                        </div>
-                        <div class="comparison-section">
-                            <div class="section-title">Month to Date</div>
-                            <div class="value-row">
-                                <span class="value-label">Actual:</span>
-                                <span class="value-number">${formatNumber(data.mtd.actual)}</span>
-                            </div>
-                            <div class="value-row">
-                                <span class="value-label">Target:</span>
-                                <span class="value-number">${formatNumber(data.mtd.target)}</span>
-                            </div>
-                            <div class="value-row">
-                                <span class="value-label">Variance:</span>
-                                <span class="value-number ${getVarianceClass(data.mtd.variance)}">${formatNumber(data.mtd.variance)}</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${Math.min(100, mtdProgress)}%"></div>
-                            </div>
-                        </div>
+            <!-- DBS Barcode Comparison Tool -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card tool-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-upc-scan card-icon"></i>
+                        <h5 class="card-title">DBS Barcode Comparison Tool</h5>
+                        <p class="card-text">Compare Wi ISBN to DBS Datamatrix</p>
+                        <a href="https://tjintranet.github.io/Barcode-Comparison-Tool/" class="btn btn-primary btn-sm">Open</a>
                     </div>
                 </div>
-            `;
+            </div>             
+
+            <!-- Book Weight Calculator -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card tool-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calculator-fill card-icon"></i>
+                        <h5 class="card-title">Book Weight Calculator</h5>
+                        <p class="card-text">Calculate Book Weights</p>
+                        <a href="https://tjintranet.github.io/POD-Book-Weight-Calculator/" class="btn btn-primary btn-sm">Open</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spine Size Calculator -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card tool-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calculator-fill card-icon"></i>
+                        <h5 class="card-title">Spine Size Calculator</h5>
+                        <p class="card-text">Calculate Spine Sizes</p>
+                        <a href="https://tjintranet.github.io/Spine-Calculator/" class="btn btn-primary btn-sm">Open</a>
+                    </div>
+                </div>
+            </div>  
+
+            <!-- Micron to Volume Converter -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card tool-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calculator-fill card-icon"></i>
+                        <h5 class="card-title">Micron to Volume Converter</h5>
+                        <p class="card-text">Convert Microns to Volume</p>
+                        <a href="https://tjintranet.github.io/Micron-To-Volume-Converter/" class="btn btn-primary btn-sm">Open</a>
+                    </div>
+                </div>
+            </div>            
+
+    <!-- XML Parser -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card tool-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-code-slash card-icon"></i>
+                    <h5 class="card-title">XML Parser</h5>
+                    <p class="card-text">Parse XML Files</p>
+                    <a href="https://tjintranet.github.io/XML-Parser/" class="btn btn-primary btn-sm">Open</a>
+                </div>
+            </div>
+        </div>
+
+    <!-- JDF Parser -->
+    <div class="col-md-4 col-lg-3">
+        <div class="card tool-card">
+            <div class="card-body text-center">
+                <i class="bi bi-code-slash card-icon"></i>
+                <h5 class="card-title">JDF Parser</h5>
+                <p class="card-text">Parse JDF/JT Files</p>
+                <a href="https://tjintranet.github.io/JDF-Parser/" class="btn btn-primary btn-sm">Open</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced XML Reader-->
+    <div class="col-md-4 col-lg-3">
+        <div class="card tool-card">
+            <div class="card-body text-center">
+                <i class="bi bi-code-slash card-icon"></i>
+                <h5 class="card-title">Enhanced XML Reader</h5>
+                <p class="card-text">Read, Search & Export</p>
+                <a href="https://tjintranet.github.io/Enhanced-XML-Reader/" class="btn btn-primary btn-sm">Open</a>
+            </div>
+        </div>
+    </div>  
+
+    <!-- XSLT Transformer-->
+    <div class="col-md-4 col-lg-3">
+        <div class="card tool-card">
+            <div class="card-body text-center">
+                <i class="bi bi-code-slash card-icon"></i>
+                <h5 class="card-title">XSLT Transformer</h5>
+                <p class="card-text">Transform XML Documents</p>
+                <a href="https://tjintranet.github.io/XSLT-Transform-Tester/" class="btn btn-primary btn-sm">Open</a>
+            </div>
+        </div>
+    </div>     
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.querySelector('.theme-toggle i');
+            
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                icon.classList.replace('bi-sun-fill', 'bi-moon-fill');
+                localStorage.setItem('theme', 'dark');
+                document.body.style.background = 'linear-gradient(180deg, #000000 0%, #121212 100%)';
+            } else {
+                icon.classList.replace('bi-moon-fill', 'bi-sun-fill');
+                localStorage.setItem('theme', 'light');
+                document.body.style.background = '#f8f9fa';
+            }
         }
 
-        // Load data when page loads
-        document.addEventListener('DOMContentLoaded', loadData);
-
-        // Optional: Refresh data every 5 minutes
-        setInterval(loadData, 5 * 60 * 1000);
+        // Check for saved theme preference
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.querySelector('.theme-toggle i').classList.replace('bi-sun-fill', 'bi-moon-fill');
+                document.body.style.backgroundColor = '#000000';
+            }
+        });
     </script>
 </body>
 </html>
