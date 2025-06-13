@@ -283,7 +283,7 @@
 
         .summary-stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             margin-top: 20px;
         }
@@ -463,8 +463,8 @@
         }
 
         function getPercentageClass(percentage) {
-            if (percentage >= 90) return 'good';
-            if (percentage >= 70) return 'warning';
+            if (percentage >= 95) return 'good';
+            if (percentage >= 85) return 'warning';
             return 'poor';
         }
 
@@ -559,8 +559,8 @@
                 },
                 mtd: { 
                     actual: parseInt(personalizedLine[14]) || 11756, 
-                    target: parseFloat(personalizedLine[15]) || 26000, 
-                    variance: parseFloat(personalizedLine[16]) || -14244 
+                    target: Math.round(parseFloat(personalizedLine[15])) || 26000, 
+                    variance: Math.round(parseFloat(personalizedLine[16])) || -14244 
                 }
             };
 
@@ -862,10 +862,6 @@
                 <div class="stat-box">
                     <div class="stat-value">${formatNumber(totalMTD)}</div>
                     <div class="stat-label">Total Units MTD</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">${totalHours}</div>
-                    <div class="stat-label">Total Hours</div>
                 </div>
             `;
         }
