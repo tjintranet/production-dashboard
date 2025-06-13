@@ -516,7 +516,9 @@
                 yesterday: { 
                     actual: parseInt(conventionalLine[1]) || 1614, 
                     target: parseInt(conventionalLine[2]) || 11000, 
-                    variance: parseInt(conventionalLine[3]) || -9386 
+                    variance: parseInt(conventionalLine[3]) || -9386,
+                    heads: parseInt(conventionalLine[6]) || 11,
+                    hours: parseInt(conventionalLine[7]) || 132
                 },
                 mtd: { 
                     actual: parseInt(conventionalLine[14]) || 11184, 
@@ -531,7 +533,9 @@
                 yesterday: { 
                     actual: parseInt(podLine[1]) || 800, 
                     target: parseInt(podLine[2]) || 1250, 
-                    variance: parseInt(podLine[3]) || -450 
+                    variance: parseInt(podLine[3]) || -450,
+                    heads: parseInt(podLine[6]) || 2,
+                    hours: parseInt(podLine[7]) || 24
                 },
                 mtd: { 
                     actual: parseInt(podLine[14]) || 7927, 
@@ -546,7 +550,9 @@
                 yesterday: { 
                     actual: parseInt(personalizedLine[1]) || 1774, 
                     target: parseInt(personalizedLine[2]) || 3000, 
-                    variance: parseInt(personalizedLine[3]) || -1226 
+                    variance: parseInt(personalizedLine[3]) || -1226,
+                    heads: parseInt(personalizedLine[6]) || 2,
+                    hours: parseInt(personalizedLine[7]) || 24
                 },
                 mtd: { 
                     actual: parseInt(personalizedLine[14]) || 11756, 
@@ -561,7 +567,9 @@
                 yesterday: { 
                     actual: parseInt(tradeLine[1]) || 269, 
                     target: parseInt(tradeLine[2]) || 12500, 
-                    variance: parseInt(tradeLine[3]) || -12231 
+                    variance: parseInt(tradeLine[3]) || -12231,
+                    heads: parseInt(tradeLine[6]) || 10,
+                    hours: parseInt(tradeLine[7]) || 120
                 },
                 mtd: { 
                     actual: parseInt(tradeLine[14]) || 8541, 
@@ -585,6 +593,24 @@
                 personalized: {
                     yesterday: parseFloat(lines[19].split(',')[11]) * 100 || 71.9,
                     mtd: parseFloat(lines[19].split(',')[18]) * 100 || 69.2
+                }
+            };
+
+            // Parse Rework data (Lines 30 and 32)
+            const reworkYesterdayLine = lines[29].split(','); // Line 30
+            const reworkMtdLine = lines[31].split(','); // Line 32
+            data.rework = {
+                yesterday: {
+                    jobs: parseInt(reworkYesterdayLine[1]) || 1,
+                    jobParts: parseInt(reworkYesterdayLine[2]) || 1,
+                    quantity: parseInt(reworkYesterdayLine[3]) || 750,
+                    value: parseFloat(reworkYesterdayLine[4]) || 354.25
+                },
+                mtd: {
+                    jobs: parseInt(reworkMtdLine[1]) || 8,
+                    jobParts: parseInt(reworkMtdLine[2]) || 10,
+                    quantity: parseInt(reworkMtdLine[3]) || 3483,
+                    value: parseFloat(reworkMtdLine[4]) || 3163.22
                 }
             };
 
@@ -629,7 +655,7 @@
                 ${createMetricCard('trade', 'CT', 'Clays Trade', data.trade)}
             `;
 
-            // Render KPIs with real data from CSV
+            // Render KPIs with real data from CSV plus Rework section
             const kpiSection = document.getElementById('kpi-section');
             kpiSection.innerHTML = `
                 <div class="kpi-card">
@@ -668,55 +694,59 @@
                     </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">In Full Performance</div>
+                    <div class="kpi-title">Rework Analysis</div>
                     <div class="kpi-grid">
                         <div class="comparison-section">
                             <div class="section-title">Yesterday</div>
                             <div class="kpi-item">
-                                <div class="kpi-metric">Conventional & Trade</div>
-                                <div class="kpi-value">96.0%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">6 units</span>
-                                </div>
+                                <div class="kpi-metric">Jobs</div>
+                                <div class="kpi-value">${data.rework?.yesterday?.jobs || 1}</div>
                             </div>
                             <div class="kpi-item">
-                                <div class="kpi-metric">POD</div>
-                                <div class="kpi-value good">100%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">0 units</span>
-                                </div>
+                                <div class="kpi-metric">Quantity</div>
+                                <div class="kpi-value">${formatNumber(data.rework?.yesterday?.quantity || 750)}</div>
+                            </div>
+                            <div class="kpi-item">
+                                <div class="kpi-metric">Value</div>
+                                <div class="kpi-value">£${(data.rework?.yesterday?.value || 354.25).toFixed(2)}</div>
                             </div>
                         </div>
                         <div class="comparison-section">
                             <div class="section-title">Month to Date</div>
                             <div class="kpi-item">
-                                <div class="kpi-metric">Conventional & Trade</div>
-                                <div class="kpi-value">98.7%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">220 units</span>
-                                </div>
+                                <div class="kpi-metric">Jobs</div>
+                                <div class="kpi-value">${data.rework?.mtd?.jobs || 8}</div>
                             </div>
                             <div class="kpi-item">
-                                <div class="kpi-metric">POD</div>
-                                <div class="kpi-value good">100%</div>
-                                <div class="value-row">
-                                    <span class="value-label">Short:</span>
-                                    <span class="value-number">0 units</span>
-                                </div>
+                                <div class="kpi-metric">Quantity</div>
+                                <div class="kpi-value">${formatNumber(data.rework?.mtd?.quantity || 3483)}</div>
+                            </div>
+                            <div class="kpi-item">
+                                <div class="kpi-metric">Value</div>
+                                <div class="kpi-value">£${(data.rework?.mtd?.value || 3163.22).toFixed(2)}</div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
 
-            // Render summary stats
+            // Render summary stats with calculated totals from CSV
             const totalYesterday = data.conventional.yesterday.actual + data.pod.yesterday.actual + 
                                   data.personalized.yesterday.actual + data.trade.yesterday.actual;
             const totalMTD = data.conventional.mtd.actual + data.pod.mtd.actual + 
                             data.personalized.mtd.actual + data.trade.mtd.actual;
+            
+            // Calculate total hours from individual product lines
+            const totalHours = (data.conventional.yesterday.hours || 0) + 
+                              (data.pod.yesterday.hours || 0) + 
+                              (data.personalized.yesterday.hours || 0) + 
+                              (data.trade.yesterday.hours || 0);
+
+            // Calculate total heads
+            const totalHeads = (data.conventional.yesterday.heads || 0) + 
+                              (data.pod.yesterday.heads || 0) + 
+                              (data.personalized.yesterday.heads || 0) + 
+                              (data.trade.yesterday.heads || 0);
 
             const summaryStats = document.getElementById('summary-stats');
             summaryStats.innerHTML = `
@@ -729,7 +759,7 @@
                     <div class="stat-label">Total Units MTD</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value">300</div>
+                    <div class="stat-value">${totalHours}</div>
                     <div class="stat-label">Total Hours</div>
                 </div>
             `;
