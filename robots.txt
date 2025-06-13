@@ -1,0 +1,58 @@
+# Robots.txt for TJ Clays Production Dashboard
+# Prevent all web crawlers from indexing this site
+
+User-agent: *
+Disallow: /
+
+# Explicitly block major search engine bots
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
+User-agent: Slurp
+Disallow: /
+
+User-agent: DuckDuckBot
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
+
+User-agent: facebookexternalhit
+Disallow: /
+
+User-agent: Twitterbot
+Disallow: /
+
+User-agent: LinkedInBot
+Disallow: /
+
+# Block archive services
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: archive.org_bot
+Disallow: /
+
+User-agent: Wayback
+Disallow: /
+
+# Block SEO and analysis tools
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# No sitemap provided (additional security measure)
