@@ -325,7 +325,7 @@ function renderDashboard(data) {
                 <div class="comparison-section">
                     <div class="section-title">Yesterday</div>
                     <div class="kpi-item">
-                        <div class="kpi-metric">Conventional & Trade</div>
+                        <div class="kpi-metric">Conventional & Clays Trade</div>
                         <div class="percentage ${getPercentageClass(data.onTime?.conventional?.yesterday || 87)}">${(data.onTime?.conventional?.yesterday || 87).toFixed(1)}%</div>
                     </div>
                     <div class="kpi-item">
@@ -340,7 +340,7 @@ function renderDashboard(data) {
                 <div class="comparison-section">
                     <div class="section-title">Month to Date</div>
                     <div class="kpi-item">
-                        <div class="kpi-metric">Conventional & Trade</div>
+                        <div class="kpi-metric">Conventional & Clays Trade</div>
                         <div class="percentage ${getPercentageClass(data.onTime?.conventional?.mtd || 96.9)}">${(data.onTime?.conventional?.mtd || 96.9).toFixed(1)}%</div>
                     </div>
                     <div class="kpi-item">
@@ -360,7 +360,7 @@ function renderDashboard(data) {
                 <div class="comparison-section">
                     <div class="section-title">Yesterday</div>
                     <div class="kpi-item">
-                        <div class="kpi-metric">Conventional & Trade</div>
+                        <div class="kpi-metric">Conventional & Clays Trade</div>
                         <div class="percentage ${getInFullPercentageClass(100 + (data.inFull?.conventional?.yesterday?.percentageShort || -4))}">${(100 + (data.inFull?.conventional?.yesterday?.percentageShort || -4)).toFixed(1)}%</div>
                         <div class="value-row">
                             <span class="value-label">Short:</span>
@@ -387,7 +387,7 @@ function renderDashboard(data) {
                 <div class="comparison-section">
                     <div class="section-title">Month to Date</div>
                     <div class="kpi-item">
-                        <div class="kpi-metric">Conventional & Trade</div>
+                        <div class="kpi-metric">Conventional & Clays Trade</div>
                         <div class="percentage ${getInFullPercentageClass(100 + (data.inFull?.conventional?.mtd?.percentageShort || -1.3))}">${(100 + (data.inFull?.conventional?.mtd?.percentageShort || -1.3)).toFixed(1)}%</div>
                         <div class="value-row">
                             <span class="value-label">Short:</span>
